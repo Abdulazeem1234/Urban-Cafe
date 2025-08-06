@@ -1,0 +1,45 @@
+{
+  "name": "urban-cafe",
+  "version": "1.0.0",
+  "description": "A food ordering web application for Urban-Cafe",
+  "main": "index.js",
+  "scripts": {
+    "start": "set PORT=3006 && react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server.js",
+    "dev": "concurrently \"npm start\" \"npm run server\""
+  },
+  "keywords": [
+    "food-ordering",
+    "restaurant",
+    "cafe",
+    "react"
+  ],
+  "author": "Urban-Cafe",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
+    "emailjs-com": "^3.2.0",
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
