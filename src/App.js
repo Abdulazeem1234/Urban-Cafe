@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from 'emailjs-com';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Menu from './components/Menu';
@@ -55,8 +56,11 @@ function App() {
   // Place order with customer information
   const placeOrder = async (customerInfo) => {
     if (cart.length > 0) {
-      // Send order to backend server
-      await sendOrderToServer(customerInfo);
+      // Send order email
+      const emailSent = await sendOrderEmail(customerInfo);
+      
+      // Show popup regardless of email success
+      setShowPopup(true);
       
       // Clear cart after placing order
       setCart([]);
@@ -66,8 +70,8 @@ function App() {
     }
   };
   
-  // Send order to backend server
-  const sendOrderToServer = async (customerInfo) => {
+  // Send order email using EmailJS
+  const sendOrderEmail = async (customerInfo) => {
     // Create order summary
     let orderSummary = "";
     cart.forEach(item => {
@@ -76,51 +80,34 @@ function App() {
     
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Order data
-    const orderData = {
-      customerInfo: {
-        name: customerInfo.name,
-        mobile: customerInfo.mobile,
-        address: customerInfo.address
-      },
-      orderItems: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        totalPrice: item.price * item.quantity
-      })),
-      orderSummary: orderSummary,
-      totalAmount: total
+    // Email parameters
+    const templateParams = {
+      to_email: 'zubbi216@gmail.com',
+      from_name: customerInfo.name,
+      from_mobile: customerInfo.mobile,
+      from_address: customerInfo.address,
+      order_details: orderSummary,
+      total_amount: total
     };
     
-    // Log the order data for debugging
-    console.log('Order data being sent:', orderData);
+    // Log the email parameters for debugging
+    console.log('Email template parameters:', templateParams);
     
     try {
-      // Send order to backend server
-      const response = await fetch('http://localhost:5000/api/order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData)
-      });
+      // Send email using EmailJS
+      // IMPORTANT: You need to replace these placeholder values with your actual EmailJS credentials
+      const result = await emailjs.send(
+        'YOUR_ACTUAL_SERVICE_ID',     // Replace with your Service ID
+        'YOUR_ACTUAL_TEMPLATE_ID',    // Replace with your Template ID
+        templateParams,
+        'YOUR_ACTUAL_USER_ID'         // Replace with your User ID
+      );
       
-      const result = await response.json();
-      
-      if (response.ok && result.success) {
-        console.log('Order sent successfully!', result);
-      } else {
-        console.error('Failed to send order:', result.message);
-      }
-      
-      // Show popup after attempting to send order
-      setShowPopup(true);
+      console.log('Email sent successfully!', result.text);
+      return true;
     } catch (error) {
-      console.error('Error sending order:', error);
-      // Show popup even if order sending fails
-      setShowPopup(true);
+      console.error('Failed to send email:', error);
+      return false;
     }
   };
   
@@ -152,11 +139,13 @@ function App() {
         )}
         <About />
         <Contact />
+        <Footer />
+        
+        <OrderPopup 
+          show={showPopup}
+          onClose={closePopup}
+        /> 
       </main>
-      
-      <Footer />
-      
-      {showPopup && <OrderPopup onClose={closePopup} />}
     </div>
   );
 }

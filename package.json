@@ -20,11 +20,13 @@
   "author": "Urban-Cafe",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.11.0",
     "body-parser": "^2.2.0",
     "concurrently": "^9.2.0",
     "cors": "^2.8.5",
     "emailjs-com": "^3.2.0",
     "express": "^5.1.0",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

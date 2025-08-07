@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailjs from 'emailjs-com';
 import OrderPopup from './OrderPopup';
 
 const Contact = () => {
@@ -65,22 +66,29 @@ const Contact = () => {
     }
     
     try {
-      // Send contact message to backend
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+      // Prepare email parameters
+      const templateParams = {
+        to_email: 'zubbi216@gmail.com',
+        from_name: formData.name,
+        from_phone: formData.phone,
+        from_email: formData.email || 'Not provided',
+        message: formData.message
+      };
       
-      const result = await response.json();
+      // Send email using EmailJS
+      // IMPORTANT: You need to replace these placeholder values with your actual EmailJS credentials
+      const result = await emailjs.send(
+        'YOUR_ACTUAL_SERVICE_ID',     // Replace with your Service ID
+        'YOUR_ACTUAL_TEMPLATE_ID',    // Replace with your Template ID
+        templateParams,
+        'YOUR_ACTUAL_USER_ID'         // Replace with your User ID
+      );
       
-      if (response.ok && result.success) {
+      if (result.text === 'OK') {
         // Show success popup
         setPopupMessage('Thank you for your message! We will get back to you soon.');
         setShowPopup(true);
-        setFormData({ name: '', phone: '', message: '' });
+        setFormData({ name: '', phone: '', email: '', message: '' });
       } else {
         // Show error popup
         setPopupMessage('Sorry, there was an error sending your message. Please try again later.');
